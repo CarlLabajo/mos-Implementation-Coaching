@@ -1,0 +1,20 @@
+/node_modules
+/.next
+/out
+/build
+.DS_Store
+*.pem
+npm-debug.log*
+.env*
+!.env.example
+next-env.d.ts
+*.tsbuildinfo
+
+# Local design/HTML option mockups — not part of the app
+/design
+
+# Testimonial videos — exceed GitHub's 100MB limit; host/compress before shipping
+/public/testimonials/*.mp4
+
+# Local Claude Code dev config (not part of the app)
+.claude/
