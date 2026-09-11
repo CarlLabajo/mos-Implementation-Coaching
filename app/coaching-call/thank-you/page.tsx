@@ -18,15 +18,15 @@ export const metadata: Metadata = {
 
 const STEPS = [
   {
-    title: "Check your inbox",
+    title: "Check Your Inbox",
     body: "We just sent your calendar invite and a confirmation email. Add it to your calendar so it's locked in.",
   },
   {
-    title: "Block 30 focused minutes",
-    body: "Find a quiet spot where you can talk openly. We'll do the driving — no prep or slides required.",
+    title: "Block 30 Focused Minutes",
+    body: "Find a quiet spot, free from distractions, where you can talk openly. Turn off other technology.",
   },
   {
-    title: "Bring your #1 bottleneck",
+    title: "Bring Your #1 Bottleneck",
     body: "Come with the single biggest thing slowing your growth. That's where we'll start.",
   },
 ];
@@ -62,8 +62,8 @@ export default function ThankYouPage() {
               Booking confirmed
             </p>
             <h1 className="mt-3 text-3xl font-extrabold leading-[1.1] tracking-tight text-brand-ink sm:text-5xl">
-              Your strategy call is{" "}
-              <span className="text-brand-orange">booked</span>
+              Your Strategy Call Is{" "}
+              <span className="text-brand-orange">Booked</span>
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-brand-charcoal sm:text-lg">
               Check your inbox — we&rsquo;ve sent a calendar invite and confirmation

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { upsertContact, addContactNote } from "@/lib/ghl";
+import { upsertContact, addContactNote, postToInboundWebhook } from "@/lib/ghl";
 
 // Runs on the Node.js runtime; the PIT never reaches the browser.
 export const runtime = "nodejs";
@@ -58,6 +58,27 @@ export async function POST(request: Request) {
     customFields.push({ id: process.env.GHL_FIELD_REVENUE, field_value: data.revenue });
   }
 
+  // Push the raw submission to the GHL Inbound Webhook first, and on its own.
+  // It uses a different credential than the contacts API, so the lead still
+  // lands in HighLevel even if the PIT isn't configured or the upsert fails.
+  const webhook = await postToInboundWebhook({
+    source: "Coaching Call Request",
+    formName: "coaching-call",
+    pageUrl: "/coaching-call",
+    submittedAt: new Date().toISOString(),
+    firstName: firstName || "",
+    lastName: lastName || "",
+    name: [firstName, lastName].filter(Boolean).join(" "),
+    email,
+    phone: phone || "",
+    organization: organization || "",
+    companyName: organization || "",
+    businessOwner: data.businessOwner || "",
+    industry: data.industry || "",
+    revenue: data.revenue || "",
+    tags: ["coaching-call-request", "mos-coaching-lead"],
+  });
+
   try {
     const { contactId } = await upsertContact({
       firstName: firstName || undefined,
@@ -97,9 +118,14 @@ export async function POST(request: Request) {
       bookingUrl = url.toString();
     }
 
-    return NextResponse.json({ ok: true, contactId, bookingUrl });
+    return NextResponse.json({ ok: true, contactId, bookingUrl, webhook: webhook.ok });
   } catch (err) {
     console.error("Coaching lead submission error:", err);
+    // The webhook already delivered the lead — don't fail the visitor for a
+    // contacts-API problem we can reconcile in HighLevel.
+    if (webhook.ok) {
+      return NextResponse.json({ ok: true, webhook: true, contactId: null });
+    }
     return NextResponse.json(
       { ok: false, error: "We couldn't process that. Please try again or email us." },
       { status: 502 }

@@ -197,6 +197,7 @@ export default function CoachingCall() {
   const [step, setStep] = useState<"form" | "calendar">("form");
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -297,12 +298,36 @@ export default function CoachingCall() {
                 </div>
 
                 <Field label="Email">
-                  <input type="email" name="email" required placeholder="you@company.com" className={inputCls} />
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    autoComplete="email"
+                    inputMode="email"
+                    pattern="[^@\s]+@[^@\s]+\.[A-Za-z]{2,}"
+                    title="Enter a valid email address, e.g. you@company.com"
+                    placeholder="you@company.com"
+                    className={inputCls}
+                  />
                 </Field>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Mobile number">
-                    <input type="tel" name="phone" required placeholder="(555) 123-4567" className={inputCls} />
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      autoComplete="tel"
+                      inputMode="numeric"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 15))}
+                      minLength={10}
+                      maxLength={15}
+                      pattern="[0-9]{10,15}"
+                      title="Enter numbers only — at least 10 digits"
+                      placeholder="5551234567"
+                      className={inputCls}
+                    />
                   </Field>
                   <Field label="Organization">
                     <input type="text" name="organization" required placeholder="Acme Inc." className={inputCls} />
@@ -337,7 +362,7 @@ export default function CoachingCall() {
                   disabled={loading}
                   className="mt-2 w-full rounded-[10px] bg-brand-orange px-6 py-3.5 text-base font-semibold text-white shadow-[0_12px_30px_-10px_rgba(234,123,27,0.85)] transition-colors hover:bg-brand-orange-dark disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {loading ? "Submitting…" : "Book a Schedule"}
+                  {loading ? "Submitting…" : "Schedule My Call"}
                 </button>
                 <p className="text-center text-xs text-brand-gray">
                   By submitting you agree to our{" "}
